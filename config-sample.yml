@@ -1,0 +1,6 @@
+kollus_domain: kr.kollus.com
+version: 0
+language_key: korean
+service_account:
+  key: fill_me
+  api_access_token: fill_me
