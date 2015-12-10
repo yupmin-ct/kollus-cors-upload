@@ -1,6 +1,6 @@
 # Kollus CORS Upload
 
-## requirement
+## Requirement
  * php 5.3 above
  * npm (of node 4.2 above)
  * composer
