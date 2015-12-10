@@ -61,15 +61,15 @@ $serviceAccountKey = isset($config['service_account']['key']) ? $config['service
 
 <title>Kollus CORS Upload</title>
 
-<link href="/public/assets/css/default.css" rel="stylesheet">
+<link href="public/assets/css/default.css" rel="stylesheet">
 <!--[if lt IE 9]>
 <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
+    <nav class="navbar navbar-default  navbar-static-top">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed"
                   data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -84,7 +84,7 @@ $serviceAccountKey = isset($config['service_account']['key']) ? $config['service
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="https://github.com/yupmin-ct/kollus-cors-upload"><i class="fa fa-github fa-lg"></i> Github</a></li>
                 </ul>
-            </div>
+            </div><!--/.nav-collapse -->
         </div>
     </nav>
 
@@ -146,8 +146,8 @@ $serviceAccountKey = isset($config['service_account']['key']) ? $config['service
     </div>
 
 
-<script src="/public/assets/js/default.js"></script>
-<script src="/src/cors-upload.js"></script>
+<script src="public/assets/js/default.js"></script>
+<script src="src/cors-upload.js"></script>
 
 </body>
 </html>
