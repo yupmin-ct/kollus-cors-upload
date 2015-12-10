@@ -1,0 +1,19 @@
+{
+  "name": "kollus-cors-upload",
+  "description": "Kollus CORS Upload",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bowser_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "font-awesome": "fontawesome#~4.4.0",
+    "jquery": "~2.1.4"
+  },
+  "devDependencies": {
+    "ua-parser-js": "~0.7.9"
+  }
+}

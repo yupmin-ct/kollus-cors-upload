@@ -1,0 +1,6 @@
+{
+    "require": {
+        "kollus/kollus-sdk": "^1.0",
+        "symfony/yaml": "~2.8"
+    }
+}

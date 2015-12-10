@@ -1,0 +1,26 @@
+{
+  "name": "kollus-cors-upload",
+  "version": "0.0.1",
+  "description": "Kollus CORS Upload",
+  "main": "gulpfile.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-header": "^1.7.1",
+    "gulp-less": "^3.0.5",
+    "gulp-concat": "^2.6.0",
+    "mocha": "^2.3.4"
+  },
+  "scripts": {
+    "test": "`npm bin`/mocha test",
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yupmin-ct/kollus-cors-upload.git"
+  },
+  "author": "Yun Young-Jin <yupmin@catenoid.net>",
+  "license": "MIT"
+}
