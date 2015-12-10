@@ -20,9 +20,7 @@ function showAlert(type, message, delayTime, slideUpTime){
     delayTime = delayTime || 5000;
     slideUptime = slideUpTime || 200;
 
-    alertMessage.delay(delayTime).slideUp(slideUpTime, function() {
-        $(this).alert('close');
-    });
+    alertMessage.delay(delayTime).slideUp(slideUpTime);
 
     $('#alert_message').append(alertMessage);
 }
@@ -31,6 +29,9 @@ function showAlert(type, message, delayTime, slideUpTime){
  * Upload event handler
  */
 $(document).on('click', 'button[data-action=upload-file]', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     var thisTag = $(this),
         closestForm = thisTag.closest('form'),
         uploadFile = closestForm.find('input[type=file][name=upload-file]'),
@@ -47,9 +48,6 @@ $(document).on('click', 'button[data-action=upload-file]', function(e) {
         repeatorId,
         uaParser = new UAParser(),
         browser = uaParser.getBrowser();
-
-    e.preventDefault();
-    e.stopPropagation();
 
     if ((browser.name == 'Safari' && browser.major < '4') ||
         (browser.name == 'Chrome' && browser.major < '4') ||
@@ -82,7 +80,7 @@ $(document).on('click', 'button[data-action=upload-file]', function(e) {
         function(data) {
 
             // validate data
-            if ('error' in data ||
+            if (('error' in data && data.error) ||
                 !('result' in data) ||
                 !('upload_url' in data.result) ||
                 !('progress_url' in data.result)) {
@@ -102,7 +100,7 @@ $(document).on('click', 'button[data-action=upload-file]', function(e) {
             // create form data
             formData.append('upload-file', uploadFile.prop('files')[0]);
             formData.append('disable_alert', 1);
-            formData.append('format', 'json');
+            formData.append('accept', 'application/json');
 
             // create progress bar
             progressBar = progress.find('.progress-bar');
@@ -161,7 +159,7 @@ $(document).on('click', 'button[data-action=upload-file]', function(e) {
                 },
                 success: function(data, textStatus, jqXHR) {
 
-                    if ('error' in data) {
+                    if ('error' in data && data.error) {
                         showAlert('danger',
                             ('message' in data ? data.message : 'Api response error.')
                         );
@@ -174,7 +172,6 @@ $(document).on('click', 'button[data-action=upload-file]', function(e) {
                     progressBar.attr('aria-valuenow', 100);
                     progressBar.width(100 + '%');
                     progressBar.text(100 + '%');
-                    showAlert('success', 'Successfully uploaded.');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     showAlert('danger', textStatus);
