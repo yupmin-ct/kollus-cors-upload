@@ -45,22 +45,39 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
   var self = this,
     closestForm = $(self).closest('form'),
     uploadFileInput = closestForm.find('input[type=file][name=upload-file]'),
-    uploadFileCount = uploadFileInput.prop('files').length,
+    uploadFileCount,
     categoryKey = closestForm.find('select[name=category_key]').first().val(),
     isEncryptionUpload = closestForm.find('input[type=checkbox][name=is_encryption_upload]').prop('checked'),
     isAudioUpload = closestForm.find('input[type=checkbox][name=is_audio_upload]').prop('checked'),
     title = closestForm.find('input[type=text][name=title]').val(),
     apiData = {},
     progressInterval = 1000,
-    progressValue = 0;
+    progressValue = 0,
+    supportFormData = function() {
+      return !!window.FormData;
+    },
+    supportFileAPI = function() {
+      var fi = document.createElement('INPUT');
+      fi.type = 'file';
+      return 'files' in fi;
+    },
+    supportCORS = function() {
+      return 'XMLHttpRequest' in window &&
+        'withCredentials' in new XMLHttpRequest();
+    },
+    supportAjaxUploadProgress = function() {
+      var xhr = new XMLHttpRequest();
+      return !! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload));
+    };
 
-  if (! window.FormData) {
-
+  if (!supportFormData() || !supportFileAPI() || !supportCORS()) {
     showAlert('warning', 'It is not supported by your browser.');
     return;
   }
 
-  if (uploadFileInput.prop('files').length === 0) {
+  uploadFileCount = uploadFileInput.prop('files').length;
+
+  if (uploadFileCount === 0) {
     showAlert('warning', 'Please select a file to upload.');
     uploadFileInput.focus();
     return;
@@ -128,7 +145,7 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
           xhr: function () {
             var xhr = new XMLHttpRequest();
 
-            if (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload))) {
+            if (supportAjaxUploadProgress()) {
               xhr.upload.addEventListener('progress', function (e) {
 
                 if (e.lengthComputable) {

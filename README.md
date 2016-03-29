@@ -1,8 +1,11 @@
 # Kollus CORS Upload
 
 ## Requirement
- * jQuery
+ * jQuery : required
  * bootstrap : for site's theme
+ 
+## Supported browser
+ * IE : Version 9 above
 
 ## How to use
 Attach below code to page's footer.
