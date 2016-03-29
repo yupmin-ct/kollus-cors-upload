@@ -174,7 +174,7 @@ endif;
 
 </div>
 <!--[if lt IE 10]>
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>t
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <![endif]-->
 <!--[if (gte IE 10)|!(IE)]><!-->
 <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
