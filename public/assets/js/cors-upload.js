@@ -1,4 +1,14 @@
 /**
+ * Copyright (c) 2016
+ * kollus-cors-upload - Kollus CORS Upload
+ * Built on 2016-03-29
+ * 
+ * @version 0.1.0
+ * @link https://github.com/yupmin-ct/kollus-cors-upload.git
+ * @license MIT
+ */
+
+/**
  * Show Instant Message.
  *
  * @param {string} type - success|info|warning|danger
@@ -37,6 +47,7 @@ function showAlert(type, message, options) {
  * Kollus Cors Upload
  *
  * Upload event handler
+ * required library : ua-parser-js
  */
 $(document).on('click', 'button[data-action=upload-file]', function (e) {
   e.preventDefault();
@@ -128,7 +139,8 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
           xhr: function () {
             var xhr = new XMLHttpRequest();
 
-            if (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload))) {
+            if (false) {
+              // if (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload))) {
               xhr.upload.addEventListener('progress', function (e) {
 
                 if (e.lengthComputable) {
