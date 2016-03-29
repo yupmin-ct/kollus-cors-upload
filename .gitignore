@@ -1,9 +1,9 @@
 vendor/
 node_modules/
 bower_components/
-public/
-resources/assets/js/
-resources/assets/less/bootstrap/
-resources/assets/less/font-awesome/
+!public/index.php
+resources/assets/js
+resources/assets/less/*
+!resources/assets/less/default.less
 composer.lock
 config.yml
