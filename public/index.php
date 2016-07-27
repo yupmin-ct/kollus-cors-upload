@@ -44,8 +44,8 @@ if (file_exists($configFilePath)) {
                 $title
             );
             echo json_encode(array('result' => $response));
-        } catch (ClientException $ce) {
-            echo json_encode(array('error' => 1, 'message' => $ce->getMessage));
+        } catch (\Kollus\Component\Client\ClientException $ce) {
+            echo json_encode(array('error' => 1, 'message' => $ce->getMessage()));
         }
         exit;
     }
@@ -68,12 +68,12 @@ $kollusdomain = isset($config['kollus_domain']) ? $config['kollus_domain'] : nul
 
 <title>Kollus CORS Upload</title>
 
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="assets/css/default.css">
 <!--[if lt IE 9]>
-<script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-<script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
@@ -147,7 +147,7 @@ endif;
 
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="use_encryption" value="1"> Is encryption
+                <input type="checkbox" name="use_encryption" value="1"> Use encryption
             </label>
         </div>
 
@@ -174,12 +174,12 @@ endif;
 
 </div>
 <!--[if lt IE 10]>
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <![endif]-->
 <!--[if (gte IE 10)|!(IE)]><!-->
-<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <!--<![endif]-->
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <script src="assets/js/cors-upload.js"></script>
 </body>
 </html>
