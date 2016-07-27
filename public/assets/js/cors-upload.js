@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2016
  * kollus-cors-upload - Kollus CORS Upload
- * Built on 2016-07-25
- *
+ * Built on 2016-07-27
+ * 
  * @version 0.1.1
  * @link https://github.com/yupmin-ct/kollus-cors-upload.git
  * @license MIT
@@ -140,8 +140,6 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
 
         formData.append('upload-file', uploadFile);
 
-        setTimeout(function() {
-
         $.ajax({
           url: uploadUrl,
           type: 'POST',
@@ -153,7 +151,7 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
           xhr: function () {
             var xhr = new XMLHttpRequest();
 
-            if (false/*supportAjaxUploadProgress()*/) {
+            if (supportAjaxUploadProgress()) {
               xhr.upload.addEventListener('progress', function (e) {
 
                 if (e.lengthComputable) {
@@ -227,9 +225,7 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
 
             progress.delay(2000).fadeOut(500);
           }
-        }); // ajax
-
-        }, 610 * 1000); // setTimeout
+        });
       } // function(data)
     , 'json'); // $.post
   });
