@@ -45,13 +45,13 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
   var self = this,
     closestForm = $(self).closest('form'),
     uploadFileInput = closestForm.find('input[type=file][name=upload-file]'),
-    uploadFileCount,
+    uploadFileCount = uploadFileInput.prop('files').length,
     categoryKey = closestForm.find('select[name=category_key]').first().val(),
-    isEncryptionUpload = closestForm.find('input[type=checkbox][name=is_encryption_upload]').prop('checked'),
+    useEncryption = closestForm.find('input[type=checkbox][name=use_encryption]').prop('checked'),
     isAudioUpload = closestForm.find('input[type=checkbox][name=is_audio_upload]').prop('checked'),
     title = closestForm.find('input[type=text][name=title]').val(),
     apiData = {},
-    progressInterval = 1000,
+    progressInterval = 5000, // 5sec
     progressValue = 0,
     supportFormData = function() {
       return !!window.FormData;
@@ -75,8 +75,6 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
     return;
   }
 
-  uploadFileCount = uploadFileInput.prop('files').length;
-
   if (uploadFileCount === 0) {
     showAlert('warning', 'Please select a file to upload.');
     uploadFileInput.focus();
@@ -86,7 +84,7 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
   if (categoryKey.length > 0) {
     apiData.category_key = categoryKey;
   }
-  if (isEncryptionUpload) {
+  if (useEncryption) {
     apiData.use_encryption = 1;
   }
   if (isAudioUpload) {
@@ -97,6 +95,7 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
   }
 
   showAlert('info', 'Uploading file ...');
+  $(self).attr('disabled', true);
 
   $.each(uploadFileInput.prop('files'), function (key, uploadFile) {
     $.post(
@@ -129,10 +128,7 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
         progress.append(progressBar);
         progress.insertBefore(uploadFileInput);
 
-        // create form data
         formData.append('upload-file', uploadFile);
-        formData.append('disable_alert', 1);
-        formData.append('accept', 'application/json');
 
         $.ajax({
           url: uploadUrl,
@@ -182,10 +178,9 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
                       progressBar.text(progressValue + '% - ' + uploadFile.name);
                     } else {
                       progressBar.text(progressValue + '%');
-
                     }
                   }
-                });
+                }, 'json');
               }, progressInterval);
             }
 
@@ -205,16 +200,23 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
               }
             }
           },
-          error: function (jqXHR, textStatus) {
-            showAlert('danger', textStatus + ' - ' + uploadFile.name);
+          error: function (jqXHR) {
+            try {
+              data = jqXHR.length === 0 ? {} : $.parseJSON(jqXHR.responseText);
+            } catch (err) {
+              data = {};
+            }
+
+            showAlert('danger', ('message' in data ? data.message : 'Ajax response error.') + ' - ' + uploadFile.name);
           },
           complete: function () {
             clearInterval(repeator);
+            $(self).attr('disabled', false);
 
             progress.delay(2000).fadeOut(500);
           }
         });
       } // function(data)
-    ); // $.post
+    , 'json'); // $.post
   });
 });
