@@ -1,6 +1,6 @@
 {
   "name": "kollus-cors-upload",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Kollus CORS Upload",
   "main": "gulpfile.js",
   "dependencies": {},
