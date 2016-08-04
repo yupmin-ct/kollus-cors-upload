@@ -110,7 +110,7 @@ echo '<div class="alert alert-danger"><button type="button" class="close" data-d
 ?>
     </div>
 
-    <form action="index.php?action=upload_url" method="post">
+    <form action="index.php?action=upload_url" method="post" enctype="multipart/form-data">
         <fieldset <?php if (!file_exists($configFilePath)) echo 'disabled'; ?>>
 <?php
 if (file_exists($configFilePath)):
@@ -142,7 +142,7 @@ endif;
 ?>
         <div class="form-group">
             <label for="upload-file">Upload file</label>
-            <input type="file" class="form-control" id="upload-file" name="upload-file" placeholder="Upload File" multiple>
+            <input type="file" class="form-control" id="upload-file" name="upload-file" placeholder="Upload File" multiple accept="audio/*,video/*">
         </div>
 
         <div class="checkbox">
@@ -160,6 +160,18 @@ endif;
         <div class="form-group">
             <label for="Title">Title (option)</label>
             <input type="text" class="form-control" id="Title" name="title" placeholder="Title">
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="force_iframe_upload" value="1"> Force iframe upload
+            </label>
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="force_progress_api" value="1"> Force progress api
+            </label>
         </div>
 
         <button type="submit" class="btn btn-primary" data-action="upload-file"><i class="fa fa-upload"></i> Upload</button>

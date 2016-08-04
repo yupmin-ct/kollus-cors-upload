@@ -1,9 +1,9 @@
 /**
  * Copyright (c) 2016
  * kollus-cors-upload - Kollus CORS Upload
- * Built on 2016-07-27
+ * Built on 2016-08-04
  * 
- * @version 0.1.1
+ * @version 0.1.2
  * @link https://github.com/yupmin-ct/kollus-cors-upload.git
  * @license MIT
  */
@@ -55,14 +55,24 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
   var self = this,
     closestForm = $(self).closest('form'),
     uploadFileInput = closestForm.find('input[type=file][name=upload-file]'),
-    uploadFileCount = uploadFileInput.prop('files').length,
+    uploadFileCount,
     categoryKey = closestForm.find('select[name=category_key]').first().val(),
     useEncryption = closestForm.find('input[type=checkbox][name=use_encryption]').prop('checked'),
     isAudioUpload = closestForm.find('input[type=checkbox][name=is_audio_upload]').prop('checked'),
+    forceIframeUpload = closestForm.find('input[type=checkbox][name=force_iframe_upload]').prop('checked'),
+    forceProgressApi = closestForm.find('input[type=checkbox][name=force_progress_api]').prop('checked'),
     title = closestForm.find('input[type=text][name=title]').val(),
     apiData = {},
     progressInterval = 5000, // 5sec
     progressValue = 0,
+    uploadIframeId = 'upload_iframe',
+    selectedUploadIframe,
+    uploadUrl,
+    progressUrl,
+    uploadFileKey,
+    uploadIframe = $('<iframe width="0" height="0" border="0" src="javascript: false;" style="display: none;"/>').
+    attr('id', uploadIframeId).attr('name', uploadIframeId),
+    closestFormAction = closestForm.attr('action'),
     supportFormData = function() {
       return !!window.FormData;
     },
@@ -80,17 +90,6 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
       return !! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload));
     };
 
-  if (!supportFormData() || !supportFileAPI() || !supportCORS()) {
-    showAlert('warning', 'It is not supported by your browser.');
-    return;
-  }
-
-  if (uploadFileCount === 0) {
-    showAlert('warning', 'Please select a file to upload.');
-    uploadFileInput.focus();
-    return;
-  }
-
   if (categoryKey.length > 0) {
     apiData.category_key = categoryKey;
   }
@@ -100,8 +99,67 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
   if (isAudioUpload) {
     apiData.is_audio_upload = 1;
   }
-  if (uploadFileCount === 1 && title.length > 0) {
+  if (title.length > 0) {
     apiData.title = title;
+  }
+
+  if (forceIframeUpload ||
+    (!forceIframeUpload && (!supportFormData() || !supportFileAPI() || !supportCORS()))
+  ) {
+    // upload a file using iframe
+    $.post(
+      closestForm.attr('action'),
+      apiData,
+      function (data) {
+        var progress = $('<div class="progress" />'),
+          progressBar = $('<div class="progress-bar progress-bar-striped active" style="min-width: 100%;" />');
+
+        if (('error' in data && data.error) ||
+          !('result' in data) || !('upload_url' in data.result) || !('progress_url' in data.result)) {
+          showAlert('danger', ('message' in data ? data.message : 'Api response error.'));
+        }
+
+        uploadUrl = data.result.upload_url;
+        progressUrl = data.result.progress_url;
+        uploadFileKey = data.result.upload_file_key;
+
+        selectedUploadIframe = $('#' + uploadIframeId);
+
+        progress.addClass('progress-' + uploadFileKey);
+        progressBar.attr('role', 'progressbar').text('Uploading ...');
+        progress.append(progressBar);
+        progress.insertBefore(uploadFileInput);
+
+        showAlert('info', 'Uploading file ...');
+        $(self).attr('disabled', true);
+
+        if (!selectedUploadIframe.length) {
+          $('body').append(uploadIframe);
+          selectedUploadIframe = $('#' + uploadIframeId);
+        }
+
+        selectedUploadIframe.bind('load', function() {
+          $(self).attr('disabled', false);
+
+          progress.delay(2000).fadeOut(500);
+
+          closestForm.attr('action', closestFormAction);
+          $(self).attr('disabled', false);
+        });
+
+        closestForm.attr('target', uploadIframeId).attr('action', uploadUrl);
+        closestForm.submit();
+
+        uploadFileInput.replaceWith(uploadFileInput.clone(true));
+      }, 'json');
+    return;
+  }
+
+  uploadFileCount = uploadFileInput.prop('files').length;
+  if (uploadFileCount === 0) {
+    showAlert('warning', 'Please select a file to upload.');
+    uploadFileInput.focus();
+    return;
   }
 
   showAlert('info', 'Uploading file ...');
@@ -112,11 +170,8 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
       closestForm.attr('action'),
       apiData,
       function (data) {
-        var uploadUrl,
-          progressUrl,
-          uploadFileKey,
-          formData = new FormData(),
-          progress,
+        var formData = new FormData(),
+          progress = $('<div class="progress" />'),
           progressBar,
           repeator;
 
@@ -125,19 +180,18 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
           showAlert('danger', ('message' in data ? data.message : 'Api response error.'));
         }
 
-        uploadFileInput.val('').clone(true);
-
         uploadUrl = data.result.upload_url;
         progressUrl = data.result.progress_url;
         uploadFileKey = data.result.upload_file_key;
 
-        progress = $('<div class="progress" />').addClass('progress-' + uploadFileKey);
+        progress.addClass('progress-' + uploadFileKey);
         progressBar = $('<div class="progress-bar" />').attr('aria-valuenow', 0);
         progressBar.attr('role', 'progressbar')
-          .attr('aria-valuenow', 0).attr('aria-valuemin', 0).attr('aria-valuenow', 0).css('min-width', '2em').text('0%');
+          .attr('aria-valuenow', 0).attr('aria-valuemin', 0).css('min-width', '2em').text('0%');
         progress.append(progressBar);
         progress.insertBefore(uploadFileInput);
 
+        uploadFileInput.val('').clone(true);
         formData.append('upload-file', uploadFile);
 
         $.ajax({
@@ -151,7 +205,7 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
           xhr: function () {
             var xhr = new XMLHttpRequest();
 
-            if (supportAjaxUploadProgress()) {
+            if (!forceProgressApi && supportAjaxUploadProgress()) {
               xhr.upload.addEventListener('progress', function (e) {
 
                 if (e.lengthComputable) {
@@ -170,6 +224,8 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
                 }
               }, false);
             } else {
+              progressBar.addClass('progress-bar-striped active');
+
               repeator = setInterval(function () {
 
                 $.get(progressUrl, function (data) {
@@ -225,8 +281,8 @@ $(document).on('click', 'button[data-action=upload-file]', function (e) {
 
             progress.delay(2000).fadeOut(500);
           }
-        });
+        }); // $.ajax
       } // function(data)
-    , 'json'); // $.post
+      , 'json'); // $.post
   });
 });
